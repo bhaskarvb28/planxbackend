@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"planx/internal/handlers"
 	"planx/internal/middleware"
@@ -22,6 +23,15 @@ func main() {
 
 	middleware.InitJWKS()
 
-	log.Println("Server running on :8080")
-	http.ListenAndServe(":8080", r)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server running on :%s\n", port)
+
+	err := http.ListenAndServe(":"+port, r)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
